@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using TeleDoc.API.Filters;
 using TeleDoc.Application.DTOs.Client;
 using TeleDoc.Application.Interfaces.Services;
 using TeleDoc.Application.Mappings;
@@ -44,6 +45,8 @@ public static class ServiceExtensions
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IFounderRepository, FounderRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<LogActionFilter>();
+
     }
 
     private static void AddData(this IServiceCollection services,

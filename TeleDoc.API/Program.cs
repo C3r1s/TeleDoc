@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models;
 using Serilog;
 using TeleDoc.API.Extensions;
+using TeleDoc.API.Filters;
 using TeleDoc.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +11,13 @@ builder.Services.ConfigureApplicationServices();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.ConfigureApiServices();
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
 
+builder.Services.AddControllers(options => 
+{
+    options.Filters.Add<CustomExceptionFilter>(); 
+    options.Filters.Add<StandardResultFilter>();
+
+});
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
