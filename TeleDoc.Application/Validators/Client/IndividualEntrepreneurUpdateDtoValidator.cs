@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using TeleDoc.Application.DTOs;
 using TeleDoc.Application.DTOs.Client;
 
 namespace TeleDoc.Application.Validators.Client;

@@ -29,7 +29,6 @@ public class FounderConfiguration : IEntityTypeConfiguration<Founder>
         builder.HasIndex(f => f.TaxId)
             .IsUnique();
 
-        // Связь с LegalEntity
         builder.HasOne(f => f.LegalEntity)
             .WithMany(le => le.Founders)
             .HasForeignKey(f => f.LegalEntityId)

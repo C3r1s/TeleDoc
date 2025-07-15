@@ -1,5 +1,4 @@
 ﻿using FluentResults;
-using TeleDoc.Application.DTOs;
 using TeleDoc.Application.DTOs.Client;
 
 namespace TeleDoc.Application.Interfaces.Services;

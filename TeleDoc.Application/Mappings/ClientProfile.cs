@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using TeleDoc.Application.DTOs;
 using TeleDoc.Application.DTOs.Client;
 using TeleDoc.Domain.Entities;
 

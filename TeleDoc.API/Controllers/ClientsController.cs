@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using TeleDoc.Application.DTOs;
 using TeleDoc.Application.DTOs.Client;
 using TeleDoc.Application.Interfaces.Services;
 

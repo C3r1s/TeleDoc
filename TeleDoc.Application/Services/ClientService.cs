@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FluentResults;
-using TeleDoc.Application.DTOs;
 using TeleDoc.Application.DTOs.Client;
 using TeleDoc.Application.Interfaces.Services;
 using TeleDoc.Domain.Entities;

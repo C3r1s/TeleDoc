@@ -44,7 +44,6 @@ public class ClientRepository(AppDbContext context) : IClientRepository
         return client;
     }
 
-
     public async Task<bool> TaxIdExistsAsync(string taxId)
     {
         return await context.Clients.AnyAsync(c => c.TaxId == taxId);
