@@ -17,9 +17,7 @@ public static class ServiceExtensions
 {
     public static void ConfigureDataServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-        services.AddData(configuration);
+        
     }
 
     public static void ConfigureApplicationServices(this IServiceCollection services)
@@ -49,18 +47,12 @@ public static class ServiceExtensions
 
     }
 
-    private static void AddData(this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
-    }
-
     private static void AddApplication(this IServiceCollection services)
     {
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssemblyContaining<IndividualEntrepreneurCreateDtoValidator>();
+        services.AddMediatR(cfg =>
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
         services.AddScoped<IValidator<LegalEntityCreateDto>, LegalEntityCreateDtoValidator>();
     }
 }

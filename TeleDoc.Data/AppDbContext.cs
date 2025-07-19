@@ -10,27 +10,40 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<Client> Clients { get; set; }
-    public DbSet<LegalEntity> LegalEntities { get; set; }
-    public DbSet<IndividualEntrepreneur> IndividualEntrepreneurs { get; set; }
-    public DbSet<Founder> Founders { get; set; }
+    public DbSet<Client> Clients { get; set; } = null!;
+    public DbSet<LegalEntity> LegalEntities { get; set; } = null!;
+    public DbSet<IndividualEntrepreneur> IndividualEntrepreneurs { get; set; } = null!;
+    public DbSet<Founder> Founders { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        if (modelBuilder == null) throw new ArgumentNullException(nameof(modelBuilder));
+        
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
         modelBuilder.Entity<Client>()
-            .HasDiscriminator(c => c.Type)
+            .HasDiscriminator<ClientType>(c => c.Type)
             .HasValue<LegalEntity>(ClientType.LegalEntity)
             .HasValue<IndividualEntrepreneur>(ClientType.IndividualEntrepreneur);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        UpdateTimestamps();
-        return await base.SaveChangesAsync(cancellationToken);
+        using var transaction = await Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            UpdateTimestamps();
+            var result = await base.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+            return result;
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 
     public override int SaveChanges()
@@ -41,14 +54,19 @@ public class AppDbContext : DbContext
 
     private void UpdateTimestamps()
     {
-        var entries = ChangeTracker.Entries<BaseEntity>()
-            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+        var entries = ChangeTracker
+            .Entries<BaseEntity>()
+            .Where(e => e.State is EntityState.Added or EntityState.Modified);
 
         foreach (var entry in entries)
         {
+            if (entry.Entity == null) continue;
+            
             entry.Entity.UpdatedAt = DateTime.UtcNow;
-
-            if (entry.State == EntityState.Added) entry.Entity.CreatedAt = DateTime.UtcNow;
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+            }
         }
     }
 }

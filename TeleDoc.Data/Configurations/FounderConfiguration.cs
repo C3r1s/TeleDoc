@@ -29,9 +29,13 @@ public class FounderConfiguration : IEntityTypeConfiguration<Founder>
         builder.HasIndex(f => f.TaxId)
             .IsUnique();
 
-        builder.HasOne(f => f.LegalEntity)
+        builder.HasMany(f => f.LegalEntities)
             .WithMany(le => le.Founders)
-            .HasForeignKey(f => f.LegalEntityId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .UsingEntity<Dictionary<string, object>>(
+                "LegalEntityFounder", // Название связующей таблицы (автоматическое)
+                j => j.HasOne<LegalEntity>().WithMany().HasForeignKey("LegalEntityId"),
+                j => j.HasOne<Founder>().WithMany().HasForeignKey("FounderId"),
+                j => j.ToTable("LegalEntityFounders") // Можно задать имя таблицы
+            );
     }
 }

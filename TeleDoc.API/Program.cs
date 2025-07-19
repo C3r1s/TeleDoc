@@ -1,11 +1,14 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using TeleDoc.API.Extensions;
 using TeleDoc.API.Filters;
 using TeleDoc.API.Middleware;
+using TeleDoc.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.ConfigureDataServices(builder.Configuration);
 builder.Services.ConfigureApplicationServices();
 builder.Services.AddInfrastructure(builder.Configuration);

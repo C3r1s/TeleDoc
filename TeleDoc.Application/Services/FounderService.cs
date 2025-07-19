@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using FluentValidation;
+using TeleDoc.Application.DTOs.Client;
 using TeleDoc.Application.DTOs.Founder;
 using TeleDoc.Application.Interfaces.Services;
 using TeleDoc.Domain.Entities;
@@ -53,7 +54,6 @@ public class FounderService : IFounderService
         {
             TaxId = dto.TaxId,
             FullName = dto.FullName,
-            LegalEntityId = dto.LegalEntityId
         };
 
         await _founderRepository.AddAsync(founder);
@@ -96,8 +96,13 @@ public class FounderService : IFounderService
             FullName = founder.FullName,
             CreatedAt = founder.CreatedAt,
             UpdatedAt = founder.UpdatedAt,
-            LegalEntityId = founder.LegalEntityId,
-            LegalEntityName = founder.LegalEntity?.Name ?? string.Empty
+            LegalEntities = founder.LegalEntities?
+                .Select(le => new LegalEntityShortInfoDto
+                {
+                    Id = le.Id,
+                    Name = le.Name
+                })
+                .ToList() ?? new List<LegalEntityShortInfoDto>()
         };
     }
 }

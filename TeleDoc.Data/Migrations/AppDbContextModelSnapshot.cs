@@ -22,6 +22,21 @@ namespace TeleDoc.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("LegalEntityFounder", b =>
+                {
+                    b.Property<Guid>("FounderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("FounderId", "LegalEntityId");
+
+                    b.HasIndex("LegalEntityId");
+
+                    b.ToTable("LegalEntityFounders", (string)null);
+                });
+
             modelBuilder.Entity("TeleDoc.Domain.Entities.Client", b =>
                 {
                     b.Property<Guid>("Id")
@@ -73,9 +88,6 @@ namespace TeleDoc.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<Guid>("LegalEntityId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("TaxId")
                         .IsRequired()
                         .HasMaxLength(12)
@@ -85,8 +97,6 @@ namespace TeleDoc.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LegalEntityId");
 
                     b.HasIndex("TaxId")
                         .IsUnique();
@@ -121,20 +131,19 @@ namespace TeleDoc.Data.Migrations
                     b.HasDiscriminator().HasValue(1);
                 });
 
-            modelBuilder.Entity("TeleDoc.Domain.Entities.Founder", b =>
+            modelBuilder.Entity("LegalEntityFounder", b =>
                 {
-                    b.HasOne("TeleDoc.Domain.Entities.LegalEntity", "LegalEntity")
-                        .WithMany("Founders")
-                        .HasForeignKey("LegalEntityId")
+                    b.HasOne("TeleDoc.Domain.Entities.Founder", null)
+                        .WithMany()
+                        .HasForeignKey("FounderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("LegalEntity");
-                });
-
-            modelBuilder.Entity("TeleDoc.Domain.Entities.LegalEntity", b =>
-                {
-                    b.Navigation("Founders");
+                    b.HasOne("TeleDoc.Domain.Entities.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("LegalEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

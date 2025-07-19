@@ -10,5 +10,4 @@ public interface IFounderRepository
     Task AddAsync(Founder founder);
     void Update(Founder founder);
     void Delete(Founder founder);
-    Task<IEnumerable<Founder>> GetByLegalEntityIdAsync(Guid legalEntityId);
 }

@@ -10,14 +10,14 @@ public class FounderRepository(AppDbContext context) : IFounderRepository
     public async Task<IEnumerable<Founder>> GetAllAsync()
     {
         return await context.Founders
-            .Include(f => f.LegalEntity)
+            .Include(f => f.LegalEntities)
             .ToListAsync();
     }
 
     public async Task<Founder?> GetByIdAsync(Guid id)
     {
         return await context.Founders
-            .Include(f => f.LegalEntity)
+            .Include(f => f.LegalEntities)
             .FirstOrDefaultAsync(f => f.Id == id);
     }
 
@@ -39,12 +39,5 @@ public class FounderRepository(AppDbContext context) : IFounderRepository
     public void Delete(Founder founder)
     {
         context.Founders.Remove(founder);
-    }
-
-    public async Task<IEnumerable<Founder>> GetByLegalEntityIdAsync(Guid legalEntityId)
-    {
-        return await context.Founders
-            .Where(f => f.LegalEntityId == legalEntityId)
-            .ToListAsync();
     }
 }

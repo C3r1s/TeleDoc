@@ -71,11 +71,17 @@ public class ClientsController : ControllerBase
     public async Task<ActionResult<ClientReadDto>> CreateLegalEntity(LegalEntityCreateDto dto)
     {
         var validationResult = await _legalEntityValidator.ValidateAsync(dto);
-        if (!validationResult.IsValid) return BadRequest(new { errors = validationResult.Errors });
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(new { errors = validationResult.Errors });
+        }
 
         var result = await _clientService.CreateLegalEntityAsync(dto);
 
-        if (result.IsFailed) return BadRequest(new { errors = result.Errors });
+        if (result.IsFailed)
+        {
+            return BadRequest(new { errors = result.Errors });
+        }
 
         return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value);
     }
